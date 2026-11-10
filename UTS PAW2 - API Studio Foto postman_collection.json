@@ -1,0 +1,790 @@
+{
+	"info": {
+		"_postman_id": "07a8ed70-56e4-4a9f-a4d9-f6e929a0712c",
+		"name": "UTS PAW2 - API Studio Foto (15 Pengujian)",
+		"description": "Jalankan request secara berurutan. Request 01 menyimpan fotograferId dan request 04 menyimpan sesiFotoId secara otomatis. Sesuaikan baseUrl jika port server berbeda.",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "58421813"
+	},
+	"item": [
+		{
+			"name": "Fotografer",
+			"item": [
+				{
+					"name": "POST fotografer",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('Status 201 atau 409 jika data sudah pernah dibuat', function () { pm.expect([201,409]).to.include(pm.response.code); });",
+									"if (pm.response.code === 201) pm.collectionVariables.set('fotograferId', pm.response.json()._id);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "x-api-key",
+								"value": "{{apiKey}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"kode\":\"F001\",\"nama\":\"Bayu Fotografer\"}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/fotografer",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"fotografer"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET fotografer",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/fotografer",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"fotografer"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Sesi Foto",
+			"item": [
+				{
+					"name": "POST sesi-foto",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('Status 201 atau 409 jika kode sudah ada', function () { pm.expect([201,409]).to.include(pm.response.code); });",
+									"if (pm.response.code === 201) pm.collectionVariables.set('sesiFotoId', pm.response.json()._id);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "x-api-key",
+								"value": "{{apiKey}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"kodeSesi\":\"FTO-001\",\"namaKlien\":\"Contoh namaKlien\",\"durasiJam\":11,\"paket\":\"personal\",\"lokasi\":{\"tempat\":\"Contoh tempat\",\"kota\":\"Contoh kota\"},\"fotograferId\":\"{{fotograferId}}\"}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/sesi-foto",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"sesi-foto"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET semua sesi (projection C3)",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/sesi-foto",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"sesi-foto"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET filter paket keluarga",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/sesi-foto?paket=keluarga",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"sesi-foto"
+							],
+							"query": [
+								{
+									"key": "paket",
+									"value": "keluarga"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET detail (populate fotografer)",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/sesi-foto/{{sesiFotoId}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"sesi-foto",
+								"{{sesiFotoId}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET ID tidak valid (harus 400)",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/sesi-foto/abc",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"sesi-foto",
+								"abc"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Skenario Galat",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "x-api-key",
+								"value": "rahasia",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"kodeSesi\": \"FTO-2428240110-ERROR\",\r\n  \"durasiJam\": 2,\r\n  \"paket\": \"personal\",\r\n  \"lokasi\": {\r\n    \"tempat\": \"Studio Foto\",\r\n    \"kota\": \"Palembang\"\r\n  },\r\n  \"fotograferId\": \"6af34b7557d046f90759b0c0\"\r\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/sesi-foto",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"sesi-foto"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "01 - POST fotografer (201)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							"pm.test(\"Status 201\", () => pm.response.to.have.status(201));",
+							"const d=pm.response.json(); if(d && d._id) pm.collectionVariables.set(\"fotograferId\", d._id);"
+						]
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"kode\": \"FOT001\",\n  \"nama\": \"Andi Saputra\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/fotografer",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"fotografer"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "02 - POST fotografer duplikat (409)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							"pm.test(\"Status 409\", () => pm.response.to.have.status(409));"
+						]
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"kode\": \"FOT001\",\n  \"nama\": \"Budi Santoso\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/fotografer",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"fotografer"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "03 - GET semua fotografer (200)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							"pm.test(\"Status 200\", () => pm.response.to.have.status(200));"
+						]
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{baseUrl}}/fotografer",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"fotografer"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "04 - POST sesi-foto (201)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							"pm.test(\"Status 201\", () => pm.response.to.have.status(201));",
+							"const d=pm.response.json(); if(d && d._id) pm.collectionVariables.set(\"sesiFotoId\", d._id);"
+						]
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"kodeSesi\": \"SES001\",\n  \"namaKlien\": \"Revaldo\",\n  \"durasiJam\": 2,\n  \"paket\": \"Premium\",\n  \"lokasi\": {\n    \"tempat\": \"Studio A\",\n    \"kota\": \"Palembang\"\n  },\n  \"fotograferId\": \"{{fotograferId}}\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/sesi-foto",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"sesi-foto"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "05 - POST sesi-foto kode duplikat (409)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							"pm.test(\"Status 409\", () => pm.response.to.have.status(409));"
+						]
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"kodeSesi\": \"SES001\",\n  \"namaKlien\": \"Budi\",\n  \"durasiJam\": 3,\n  \"paket\": \"Basic\",\n  \"lokasi\": {\n    \"tempat\": \"Studio B\",\n    \"kota\": \"Palembang\"\n  },\n  \"fotograferId\": \"{{fotograferId}}\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/sesi-foto",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"sesi-foto"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "06 - POST sesi-foto tanpa namaKlien (400)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							"pm.test(\"Status 400\", () => pm.response.to.have.status(400));"
+						]
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"kodeSesi\": \"SES002\",\n  \"durasiJam\": 2,\n  \"paket\": \"Premium\",\n  \"lokasi\": {\n    \"tempat\": \"Studio A\",\n    \"kota\": \"Palembang\"\n  },\n  \"fotograferId\": \"{{fotograferId}}\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/sesi-foto",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"sesi-foto"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "07 - POST sesi-foto durasi di bawah minimum (400)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							"pm.test(\"Status 400\", () => pm.response.to.have.status(400));"
+						]
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"kodeSesi\": \"SES003\",\n  \"namaKlien\": \"Dina\",\n  \"durasiJam\": 0,\n  \"paket\": \"Basic\",\n  \"lokasi\": {\n    \"tempat\": \"Studio C\",\n    \"kota\": \"Palembang\"\n  },\n  \"fotograferId\": \"{{fotograferId}}\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/sesi-foto",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"sesi-foto"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "08 - GET semua sesi-foto (200 array)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							"pm.test(\"Status 200\", () => pm.response.to.have.status(200));",
+							"pm.test(\"Response array\", () => pm.expect(pm.response.json()).to.be.an(\"array\"));"
+						]
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{baseUrl}}/sesi-foto",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"sesi-foto"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "09 - GET filter paket Premium (200)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							"pm.test(\"Status 200\", () => pm.response.to.have.status(200));",
+							"pm.test(\"Semua hasil paket Premium\", () => pm.response.json().forEach(x => pm.expect(x.paket).to.eql(\"Premium\")));"
+						]
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{baseUrl}}/sesi-foto?paket=Premium",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"sesi-foto"
+					],
+					"query": [
+						{
+							"key": "paket",
+							"value": "Premium"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "10 - GET filter paket tidak ada (200, [])",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							"pm.test(\"Status 200\", () => pm.response.to.have.status(200));",
+							"pm.test(\"Array kosong\", () => pm.expect(pm.response.json()).to.eql([]));"
+						]
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{baseUrl}}/sesi-foto?paket=tidak_ada",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"sesi-foto"
+					],
+					"query": [
+						{
+							"key": "paket",
+							"value": "tidak_ada"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "11 - GET projection field terbatas (200)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							"pm.test(\"Status 200\", () => pm.response.to.have.status(200));",
+							"pm.test(\"Field projection\", () => pm.response.json().forEach(x => { [\"_id\",\"kodeSesi\",\"namaKlien\",\"durasiJam\",\"paket\"].forEach(k => pm.expect(x).to.have.property(k)); pm.expect(x).not.to.have.property(\"lokasi\"); pm.expect(x).not.to.have.property(\"fotograferId\"); }));"
+						]
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{baseUrl}}/sesi-foto",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"sesi-foto"
+					]
+				},
+				"description": "Memeriksa projection dari controller: _id, kodeSesi, namaKlien, durasiJam, paket."
+			},
+			"response": []
+		},
+		{
+			"name": "12 - GET sesi-foto by ID (200, populate)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							"pm.test(\"Status 200\", () => pm.response.to.have.status(200));",
+							"pm.test(\"fotograferId ter-populate\", () => { const d=pm.response.json(); pm.expect(d.fotograferId).to.be.an(\"object\"); pm.expect(d.fotograferId).to.have.property(\"kode\"); pm.expect(d.fotograferId).to.have.property(\"nama\"); });"
+						]
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{baseUrl}}/sesi-foto/{{sesiFotoId}}",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"sesi-foto",
+						"{{sesiFotoId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "13 - GET ID valid tetapi tidak ada (404)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							"pm.test(\"Status 404\", () => pm.response.to.have.status(404));"
+						]
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{baseUrl}}/sesi-foto/691234567890123456789012",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"sesi-foto",
+						"691234567890123456789012"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "14 - GET ID tidak valid (400)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							"pm.test(\"Status 400\", () => pm.response.to.have.status(400));"
+						]
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{baseUrl}}/sesi-foto/abc",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"sesi-foto",
+						"abc"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "15 - GET rute tidak ada (404)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							"pm.test(\"Status 404\", () => pm.response.to.have.status(404));"
+						]
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{baseUrl}}/rute-tidak-ada",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"rute-tidak-ada"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"variable": [
+		{
+			"key": "baseUrl",
+			"value": "http://localhost:3000",
+			"type": "string"
+		},
+		{
+			"key": "fotograferId",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "sesiFotoId",
+			"value": "",
+			"type": "string"
+		}
+	]
+}
