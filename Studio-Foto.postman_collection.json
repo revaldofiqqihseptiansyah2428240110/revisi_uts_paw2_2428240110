@@ -1,0 +1,145 @@
+{
+  "info": {
+    "name": "UTS PAW2 - Studio Foto",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:3000"
+    },
+    {
+      "key": "apiKey",
+      "value": "isi-dengan-kunci-anda"
+    },
+    {
+      "key": "fotograferId",
+      "value": ""
+    },
+    {
+      "key": "sesiFotoId",
+      "value": ""
+    }
+  ],
+  "item": [
+    {
+      "name": "Fotografer",
+      "item": [
+        {
+          "name": "POST fotografer",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "x-api-key",
+                "value": "{{apiKey}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\"kode\":\"F001\",\"nama\":\"Bayu Fotografer\"}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": "{{baseUrl}}/fotografer"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status 201 atau 409 jika data sudah pernah dibuat', function () { pm.expect([201,409]).to.include(pm.response.code); });",
+                  "if (pm.response.code === 201) pm.collectionVariables.set('fotograferId', pm.response.json()._id);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "GET fotografer",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/fotografer"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Sesi Foto",
+      "item": [
+        {
+          "name": "POST sesi-foto",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "x-api-key",
+                "value": "{{apiKey}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\"kodeSesi\":\"FTO-001\",\"namaKlien\":\"Contoh namaKlien\",\"durasiJam\":11,\"paket\":\"personal\",\"lokasi\":{\"tempat\":\"Contoh tempat\",\"kota\":\"Contoh kota\"},\"fotograferId\":\"{{fotograferId}}\"}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": "{{baseUrl}}/sesi-foto"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status 201 atau 409 jika kode sudah ada', function () { pm.expect([201,409]).to.include(pm.response.code); });",
+                  "if (pm.response.code === 201) pm.collectionVariables.set('sesiFotoId', pm.response.json()._id);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "GET semua sesi (projection C3)",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/sesi-foto"
+          }
+        },
+        {
+          "name": "GET filter paket keluarga",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/sesi-foto?paket=keluarga"
+          }
+        },
+        {
+          "name": "GET detail (populate fotografer)",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/sesi-foto/{{sesiFotoId}}"
+          }
+        },
+        {
+          "name": "GET ID tidak valid (harus 400)",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/sesi-foto/abc"
+          }
+        }
+      ]
+    }
+  ]
+}

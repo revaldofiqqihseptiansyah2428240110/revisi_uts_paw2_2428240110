@@ -1,0 +1,24 @@
+{
+  "name": "uts-paw2-2428240110",
+  "version": "1.0.0",
+  "description": "REST API Studio Foto - UTS PAW2 Topik 08",
+  "main": "app.js",
+  "scripts": {
+    "start": "node app.js",
+    "dev": "nodemon app.js",
+    "seed": "node seed.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "dependencies": {
+    "cors": "^2.8.6",
+    "dotenv": "^18.0.10",
+    "express": "^5.2.1",
+    "mongoose": "^9.11.2"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.14"
+  }
+}
